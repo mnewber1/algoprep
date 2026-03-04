@@ -63,8 +63,9 @@ colima start --memory 4
 ollama pull llama3.2
 ollama serve
 
-# 2. Start the app container
-docker compose up --build
+# 2. Build and start the app container
+docker compose build
+docker compose up -d
 ```
 
 The app runs at [http://localhost:3000](http://localhost:3000). Code execution (Python + Java) works inside the container. AI chat connects to your native Ollama instance via `host.docker.internal` for full GPU performance.
