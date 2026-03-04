@@ -1,11 +1,66 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { Problem } from "@/lib/types";
+
+function renderMarkdown(text: string): string {
+  return text
+    // Code blocks
+    .replace(
+      /```(\w*)\n([\s\S]*?)```/g,
+      '<pre class="bg-black/30 p-2.5 rounded text-[11px] overflow-x-auto my-1.5 font-mono leading-[1.6]"><code>$2</code></pre>'
+    )
+    // Inline code
+    .replace(
+      /`([^`]+)`/g,
+      '<code class="bg-black/30 px-1 py-0.5 rounded text-[11px] text-blue-300 font-mono">$1</code>'
+    )
+    // Bold
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    // Italic
+    .replace(/\*([^*]+)\*/g, "<em>$1</em>")
+    // Numbered lists
+    .replace(/^\d+\.\s+(.+)$/gm, '<li class="ml-4 list-decimal">$1</li>')
+    // Bullet lists
+    .replace(/^[-*]\s+(.+)$/gm, '<li class="ml-4 list-disc">$1</li>')
+    // Line breaks (but not inside pre blocks — handled by preserving \n in pre)
+    .replace(/\n/g, "<br />");
+}
 
 interface Message {
   role: "user" | "assistant";
   content: string;
+}
+
+function ChatMessage({ message, isStreaming }: { message: Message; isStreaming: boolean }) {
+  const html = useMemo(() => {
+    if (message.role === "user") return null;
+    return renderMarkdown(message.content);
+  }, [message.content, message.role]);
+
+  return (
+    <div className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+      <div
+        className={`max-w-[85%] rounded-lg px-3 py-2 text-xs leading-relaxed ${
+          message.role === "user"
+            ? "bg-blue-600 text-white"
+            : "bg-gray-800 text-gray-200"
+        }`}
+      >
+        {message.role === "user" ? (
+          <span className="whitespace-pre-wrap">{message.content}</span>
+        ) : (
+          <div
+            className="chat-markdown whitespace-pre-wrap [&_pre]:whitespace-pre [&_code]:whitespace-pre"
+            dangerouslySetInnerHTML={{ __html: html || "" }}
+          />
+        )}
+        {message.role === "assistant" && message.content === "" && isStreaming && (
+          <span className="inline-block w-1.5 h-3.5 bg-gray-400 animate-pulse" />
+        )}
+      </div>
+    </div>
+  );
 }
 
 interface Props {
@@ -156,23 +211,7 @@ Constraints: ${problem.constraints}`;
         )}
 
         {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-          >
-            <div
-              className={`max-w-[85%] rounded-lg px-3 py-2 text-xs leading-relaxed ${
-                msg.role === "user"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-800 text-gray-200"
-              }`}
-            >
-              <pre className="whitespace-pre-wrap font-sans">{msg.content}</pre>
-              {msg.role === "assistant" && msg.content === "" && isStreaming && (
-                <span className="inline-block w-1.5 h-3.5 bg-gray-400 animate-pulse" />
-              )}
-            </div>
-          </div>
+          <ChatMessage key={i} message={msg} isStreaming={isStreaming && i === messages.length - 1} />
         ))}
         <div ref={messagesEndRef} />
       </div>
