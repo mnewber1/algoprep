@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AlgoPrep
 
-## Getting Started
+Practice core interview algorithms across 8 fundamental patterns with interactive visualizations, annotated solutions, and AI-powered tutoring.
 
-First, run the development server:
+## Features
+
+- **24 problems** across 8 algorithm patterns: Two Pointers, Sliding Window, Binary Search, BFS, DFS, Stack, Hash Map, Linked List
+- **Interactive visualizations** — step through each algorithm on example data with Prev/Next/Play controls
+- **Solutions in 3 languages** — annotated Python, Java, and Kotlin solutions for every problem
+- **Code execution** — run your code against test cases using local Python/Java runtimes
+- **AI chat** — ask questions about any problem, powered by Ollama running locally
+- **Progress tracking** — saved to localStorage per problem
+
+## Quick Start (Local)
+
+**Prerequisites:** Node.js 20+, Python 3
 
 ```bash
+git clone https://github.com/mnewber1/algoprep.git
+cd algoprep
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Optional: Java support
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# macOS
+brew install openjdk
 
-## Learn More
+# Ubuntu/Debian
+sudo apt install default-jdk-headless
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Optional: AI Chat (Ollama)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+# Install Ollama — https://ollama.com/download
+ollama pull llama3.2
+ollama serve
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The AI Chat tab on each problem page will connect to Ollama at `localhost:11434`.
 
-## Deploy on Vercel
+## Docker Setup
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Run everything (app + Ollama) with a single command:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+docker compose up --build
+```
+
+Then pull the chat model:
+
+```bash
+docker compose exec ollama ollama pull llama3.2
+```
+
+The app runs at [http://localhost:3000](http://localhost:3000). Code execution (Python + Java) works inside the container. AI chat connects to the Ollama container automatically.
+
+### Environment Variables
+
+| Variable | Default | Description |
+|---|---|---|
+| `OLLAMA_HOST` | `http://localhost:11434` | Ollama API URL |
+| `OLLAMA_MODEL` | `llama3.2` | Model to use for AI chat |
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── api/
+│   │   ├── chat/route.ts          # Ollama chat proxy (streaming)
+│   │   └── execute/route.ts       # Local code execution
+│   ├── problems/[slug]/page.tsx   # Problem workspace
+│   └── page.tsx                   # Homepage with category grid
+├── components/
+│   ├── visualization/             # Step-through renderers (8 algorithms)
+│   ├── AlgorithmModal.tsx         # "How it works" popup
+│   ├── ChatPanel.tsx              # AI chat interface
+│   ├── ProblemWorkspace.tsx       # Editor + description + solution tabs
+│   └── SolutionPanel.tsx          # Annotated solution viewer
+├── data/
+│   ├── problems.ts                # 24 problem definitions
+│   ├── solutions.ts               # Solutions in Python/Java/Kotlin
+│   ├── code-examples.ts           # Pattern-level code examples
+│   └── visualizations/            # Step generators for each algorithm
+├── hooks/
+│   ├── useStepPlayer.ts           # Visualization navigation
+│   ├── useCodeExecution.ts        # Code run + results
+│   └── useProgress.ts             # localStorage progress
+└── lib/
+    ├── types.ts                   # Core types
+    ├── visualization-types.ts     # Step data types
+    ├── harness.ts                 # Code assembly for execution
+    ├── piston.ts                  # Output parsing
+    └── progress.ts                # Progress storage
+```
+
+## Tech Stack
+
+- **Next.js 15** + React 19 + TypeScript
+- **Tailwind CSS v4** — dark theme, transition animations
+- **Monaco Editor** — VS Code-style code editing
+- **Ollama** — local LLM for AI chat (optional)
