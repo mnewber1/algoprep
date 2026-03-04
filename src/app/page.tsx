@@ -1,6 +1,7 @@
 import { CATEGORIES } from "@/lib/types";
 import { getProblemsByCategory } from "@/data/problems";
 import CategoryGrid from "@/components/CategoryGrid";
+import QuizCard from "@/components/QuizCard";
 
 export default function HomePage() {
   const categories = CATEGORIES.map((cat) => ({
@@ -23,6 +24,11 @@ export default function HomePage() {
       {/* Category grid */}
       <main className="max-w-6xl mx-auto px-6 py-8">
         <CategoryGrid categories={categories} />
+
+        {/* Complexity quiz card */}
+        <div className="mt-8">
+          <QuizCard />
+        </div>
       </main>
     </div>
   );

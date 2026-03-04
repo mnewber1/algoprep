@@ -1,6 +1,7 @@
 import { Language, ProblemProgress, ProgressData } from "./types";
 
 const STORAGE_KEY = "algoprep-progress";
+const QUIZ_SCORE_KEY = "algoprep-quiz-best";
 
 export function loadProgress(): ProgressData {
   if (typeof window === "undefined") return { problems: {} };
@@ -64,4 +65,24 @@ export function isSolved(slug: string): boolean {
 export function getSolvedCount(category: string, slugs: string[]): number {
   const data = loadProgress();
   return slugs.filter((slug) => data.problems[slug]?.solved).length;
+}
+
+export function saveQuizScore(score: number): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(QUIZ_SCORE_KEY, String(score));
+  } catch {
+    // storage full or unavailable
+  }
+}
+
+export function getQuizScore(): number | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(QUIZ_SCORE_KEY);
+    if (raw === null) return null;
+    return parseInt(raw, 10);
+  } catch {
+    return null;
+  }
 }
