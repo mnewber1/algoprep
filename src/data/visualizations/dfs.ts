@@ -7,13 +7,13 @@ import { DfsStep, TreeNode, TreeNodeState } from "@/lib/visualization-types";
 //     / \   / \
 //    1   3 5   7
 const NODES: TreeNode[] = [
-  { id: 0, value: 4, left: 1, right: 2, x: 50, y: 10 },
-  { id: 1, value: 2, left: 3, right: 4, x: 25, y: 40 },
-  { id: 2, value: 6, left: 5, right: 6, x: 75, y: 40 },
-  { id: 3, value: 1, left: null, right: null, x: 12, y: 70 },
-  { id: 4, value: 3, left: null, right: null, x: 38, y: 70 },
-  { id: 5, value: 5, left: null, right: null, x: 62, y: 70 },
-  { id: 6, value: 7, left: null, right: null, x: 88, y: 70 },
+  { id: 0, value: 4, left: 1, right: 2, x: 50, y: 15 },
+  { id: 1, value: 2, left: 3, right: 4, x: 25, y: 50 },
+  { id: 2, value: 6, left: 5, right: 6, x: 75, y: 50 },
+  { id: 3, value: 1, left: null, right: null, x: 12, y: 85 },
+  { id: 4, value: 3, left: null, right: null, x: 38, y: 85 },
+  { id: 5, value: 5, left: null, right: null, x: 62, y: 85 },
+  { id: 6, value: 7, left: null, right: null, x: 88, y: 85 },
 ];
 
 export function generateDfsSteps(): DfsStep[] {

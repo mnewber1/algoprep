@@ -24,9 +24,9 @@ export default function DfsRenderer({ step }: Props) {
       </div>
       <div className="flex gap-3">
         {/* Tree visualization */}
-        <div className="relative flex-1" style={{ height: 120 }}>
+        <div className="relative flex-1" style={{ height: 160 }}>
           {/* Edges */}
-          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 90">
+          <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
             {step.nodes.map((node) => {
               if (node.left !== null) {
                 const child = step.nodes[node.left];
@@ -34,11 +34,12 @@ export default function DfsRenderer({ step }: Props) {
                   <line
                     key={`e-${node.id}-${node.left}`}
                     x1={node.x}
-                    y1={node.y + 5}
+                    y1={node.y}
                     x2={child.x}
-                    y2={child.y - 3}
+                    y2={child.y}
                     stroke="#555"
-                    strokeWidth="1"
+                    strokeWidth="0.5"
+                    vectorEffect="non-scaling-stroke"
                   />
                 );
               }
@@ -51,11 +52,12 @@ export default function DfsRenderer({ step }: Props) {
                   <line
                     key={`e-${node.id}-${node.right}`}
                     x1={node.x}
-                    y1={node.y + 5}
+                    y1={node.y}
                     x2={child.x}
-                    y2={child.y - 3}
+                    y2={child.y}
                     stroke="#555"
-                    strokeWidth="1"
+                    strokeWidth="0.5"
+                    vectorEffect="non-scaling-stroke"
                   />
                 );
               }
