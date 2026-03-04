@@ -47,7 +47,16 @@ The AI Chat tab on each problem page will connect to Ollama at `localhost:11434`
 
 ## Docker Setup
 
-**Prerequisites:** Docker, [Ollama](https://ollama.com/download) installed natively for GPU acceleration
+**Prerequisites:** [Ollama](https://ollama.com/download) installed natively for GPU acceleration
+
+### Install Docker runtime (macOS)
+
+```bash
+brew install docker docker-compose colima
+colima start --memory 4
+```
+
+### Run
 
 ```bash
 # 1. Start Ollama natively (uses Apple Silicon / GPU)
