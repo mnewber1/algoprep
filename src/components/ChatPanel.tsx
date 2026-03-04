@@ -10,9 +10,11 @@ interface Message {
 
 interface Props {
   problem: Problem;
+  initialQuestion?: string | null;
+  onQuestionConsumed?: () => void;
 }
 
-export default function ChatPanel({ problem }: Props) {
+export default function ChatPanel({ problem, initialQuestion, onQuestionConsumed }: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
@@ -25,6 +27,15 @@ export default function ChatPanel({ problem }: Props) {
   };
 
   useEffect(scrollToBottom, [messages]);
+
+  // Pre-fill input when a line is clicked from the solution
+  useEffect(() => {
+    if (initialQuestion) {
+      setInput(initialQuestion);
+      onQuestionConsumed?.();
+      setTimeout(() => inputRef.current?.focus(), 0);
+    }
+  }, [initialQuestion, onQuestionConsumed]);
 
   const problemContext = `Title: ${problem.title}
 Category: ${problem.category}

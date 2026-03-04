@@ -21,6 +21,7 @@ export default function ProblemWorkspace({ problem }: Props) {
   const { progress, saveCode, saveCodeImmediate, markSolved } = useProgress(problem.slug);
   const { isRunning, result, execute, clearResult } = useCodeExecution();
   const [leftTab, setLeftTab] = useState<"description" | "solution" | "chat">("description");
+  const [chatQuestion, setChatQuestion] = useState<string | null>(null);
   const solution = getSolution(problem.slug);
 
   const [language, setLanguage] = useState<Language>(
@@ -115,9 +116,20 @@ export default function ProblemWorkspace({ problem }: Props) {
           {leftTab === "description" ? (
             <ProblemDescription problem={problem} />
           ) : leftTab === "solution" && solution ? (
-            <SolutionPanel solution={solution} title={problem.title} />
+            <SolutionPanel
+              solution={solution}
+              title={problem.title}
+              onAskAboutLine={(line) => {
+                setChatQuestion(`Explain this line: \`${line}\``);
+                setLeftTab("chat");
+              }}
+            />
           ) : leftTab === "chat" ? (
-            <ChatPanel problem={problem} />
+            <ChatPanel
+              problem={problem}
+              initialQuestion={chatQuestion}
+              onQuestionConsumed={() => setChatQuestion(null)}
+            />
           ) : null}
         </div>
       </div>

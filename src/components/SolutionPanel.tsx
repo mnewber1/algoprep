@@ -7,6 +7,7 @@ import { Solution } from "@/data/solutions";
 interface Props {
   solution: Solution;
   title: string;
+  onAskAboutLine?: (line: string) => void;
 }
 
 const langLabels: Record<Language, string> = {
@@ -15,8 +16,9 @@ const langLabels: Record<Language, string> = {
   kotlin: "Kotlin",
 };
 
-export default function SolutionPanel({ solution, title }: Props) {
+export default function SolutionPanel({ solution, title, onAskAboutLine }: Props) {
   const [lang, setLang] = useState<Language>("python");
+  const lines = solution.code[lang].split("\n");
 
   return (
     <div className="p-6 overflow-auto h-full text-gray-200">
@@ -58,10 +60,38 @@ export default function SolutionPanel({ solution, title }: Props) {
         ))}
       </div>
 
-      {/* Code block */}
+      {/* Clickable hint */}
+      {onAskAboutLine && (
+        <p className="text-[9px] text-gray-600 mb-1.5">
+          Click any line to ask AI about it
+        </p>
+      )}
+
+      {/* Code block with clickable lines */}
       <div className="bg-[#0d0d0d] rounded-lg border border-gray-800 overflow-x-auto">
-        <pre className="p-4 text-[12px] leading-[1.65] font-mono text-gray-300">
-          <code>{solution.code[lang]}</code>
+        <pre className="p-4 text-[12px] leading-[1.65] font-mono">
+          {lines.map((line, i) => {
+            const isEmpty = line.trim() === "";
+            return (
+              <div
+                key={i}
+                className={
+                  isEmpty
+                    ? "h-[1.65em]"
+                    : onAskAboutLine
+                    ? "text-gray-300 hover:bg-blue-600/15 hover:text-blue-200 cursor-pointer rounded-sm px-1 -mx-1 transition-colors"
+                    : "text-gray-300"
+                }
+                onClick={() => {
+                  if (!isEmpty && onAskAboutLine) {
+                    onAskAboutLine(line.trim());
+                  }
+                }}
+              >
+                {line || "\n"}
+              </div>
+            );
+          })}
         </pre>
       </div>
     </div>
