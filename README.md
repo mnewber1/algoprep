@@ -12,16 +12,17 @@ Practice core interview algorithms across 8 fundamental patterns with interactiv
 - **Complexity quiz** — 18 questions testing Big O time/space analysis with feedback and scoring
 - **Progress tracking** — saved to localStorage per problem
 
-## Quick Start (Local)
+## Quick Start
 
-**Prerequisites:** Node.js 20+, Python 3
+**Prerequisites:** Node.js 20+, Python 3, [Ollama](https://ollama.com/download)
 
 ```bash
 git clone https://github.com/mnewber1/algoprep.git
 cd algoprep
-npm install
-npm run dev
+./start.sh
 ```
+
+This installs dependencies, starts Ollama with the `llama3.2` model, and launches the dev server. Press **Enter** or **Ctrl+C** to stop everything.
 
 Open [http://localhost:3000](http://localhost:3000).
 
@@ -34,44 +35,6 @@ brew install openjdk
 # Ubuntu/Debian
 sudo apt install default-jdk-headless
 ```
-
-### Optional: AI Chat (Ollama)
-
-```bash
-# Install Ollama — https://ollama.com/download
-ollama pull llama3.2
-ollama serve
-```
-
-The AI Chat tab on each problem page will connect to Ollama at `localhost:11434`.
-
-## Docker Setup
-
-**Prerequisites:** [Ollama](https://ollama.com/download) installed natively for GPU acceleration
-
-### Install Docker runtime (macOS)
-
-```bash
-brew install docker docker-compose colima
-colima start --memory 4
-```
-
-### Run
-
-```bash
-./start.sh
-```
-
-This starts Ollama natively (for GPU acceleration), pulls the model, and launches the app container.
-
-The app runs at [http://localhost:3000](http://localhost:3000). Code execution (Python + Java) works inside the container. AI chat connects to your native Ollama instance via `host.docker.internal` for full GPU performance.
-
-### Environment Variables
-
-| Variable | Default | Description |
-|---|---|---|
-| `OLLAMA_HOST` | `http://localhost:11434` | Ollama API URL |
-| `OLLAMA_MODEL` | `llama3.2` | Model to use for AI chat |
 
 ## Project Structure
 

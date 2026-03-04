@@ -1,11 +1,12 @@
 #!/bin/bash
 
 OLLAMA_STARTED=false
+DEV_PID=""
 
 cleanup() {
   echo ""
-  echo "Stopping app container..."
-  docker-compose down 2>/dev/null
+  echo "Stopping dev server..."
+  [ -n "$DEV_PID" ] && kill "$DEV_PID" 2>/dev/null
 
   if $OLLAMA_STARTED; then
     echo "Stopping Ollama..."
@@ -31,10 +32,18 @@ fi
 echo "Pulling model..."
 ollama pull llama3.2 2>/dev/null
 
-# Start app container
-echo "Building app..."
-docker-compose build -q && docker-compose up -d
+# Install dependencies if needed
+if [ ! -d "node_modules" ]; then
+  echo "Installing dependencies..."
+  npm install
+fi
 
+# Start dev server
+echo "Starting dev server..."
+npm run dev &
+DEV_PID=$!
+
+sleep 3
 echo ""
 echo "==============================="
 echo "  AlgoPrep running at http://localhost:3000"
